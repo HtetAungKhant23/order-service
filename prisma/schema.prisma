@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,4 +5,66 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model Order {
+  id             String       @id @default(uuid())
+  orderNumber    String       @unique
+  userId         String
+  subTotal       Float        @default(0)
+  grandTotal     Float        @default(0)
+  discountAmount Float        @default(0)
+  otherCharges   Float        @default(0)
+  paymentType    PyamentType  @default(MOBLIEBANKING)
+  paymentName    PyamentName?
+  remark         String?
+  isDeleted      Boolean      @default(false)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt()
+
+  ShippingAddress ShippingAddress[]
+  OrderDetail     OrderDetail[]
+}
+
+model OrderDetail {
+  id        String   @id @default(uuid())
+  orderId   String
+  Order     Order    @relation(references: [id], fields: [orderId], onDelete: Cascade)
+  productId String
+  quantity  Int      @default(0)
+  unitPrice Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+}
+
+model CartItem {
+  id        String   @id @default(uuid())
+  userId    String
+  productId String
+  quantity  Int      @default(0)
+  unitPrice Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+}
+
+model ShippingAddress {
+  id         String   @id @default(uuid())
+  orderId    String
+  Order      Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  city       String
+  townShip   String
+  postalCode String
+  address    String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt()
+}
+
+enum PyamentType {
+  MOBLIEBANKING
+  CASHONDELI
+}
+
+enum PyamentName {
+  KBZPAY
+  WAVEPAY
 }
