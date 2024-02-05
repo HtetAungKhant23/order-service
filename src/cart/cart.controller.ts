@@ -1,15 +1,22 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { CartService } from './cart.service';
-import { CreateCartDto } from './dto/create-cart.dto';
 
 @Controller()
 export class CartController {
   constructor(private readonly cartService: CartService) {}
 
-  @MessagePattern('createCart')
-  create(@Payload() createCartDto: CreateCartDto) {
-    return this.cartService.create(createCartDto);
+  @MessagePattern({ cmd: 'create-cart' })
+  create(
+    @Payload()
+    dto: {
+      userId: string;
+      productId: string;
+      quantity: number;
+      unitPrice: number;
+    },
+  ) {
+    return this.cartService.create(dto);
   }
 
   @MessagePattern('findAllCart')

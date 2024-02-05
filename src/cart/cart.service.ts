@@ -1,10 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { CreateCartDto } from './dto/create-cart.dto';
+import { RedisService } from 'src/redis/redis.service';
 
 @Injectable()
 export class CartService {
-  create(createCartDto: CreateCartDto) {
-    return 'This action adds a new cart';
+  constructor(private redisService: RedisService) {}
+
+  async create(dto: {
+    userId: string;
+    productId: string;
+    quantity: number;
+    unitPrice: number;
+  }) {
+    return await this.redisService.createCarts(dto);
   }
 
   findAll() {
