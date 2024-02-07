@@ -9,14 +9,23 @@ export class CartController {
   @MessagePattern({ cmd: 'create-cart' })
   create(
     @Payload()
-    dto: {
+    payload: {
+      cartItems: {
+        productId: string;
+        unitPrice: number;
+        quantity: number;
+      }[];
       userId: string;
-      productId: string;
-      quantity: number;
-      unitPrice: number;
     },
+    // dto: {
+    //   userId: string;
+    //   productId: string[];
+    //   quantity: number[];
+    //   unitPrice: number[];
+    // },ss
   ) {
-    return this.cartService.create(dto);
+    // console.log(payload);
+    return this.cartService.create(payload);
   }
 
   @MessagePattern('findAllCart')

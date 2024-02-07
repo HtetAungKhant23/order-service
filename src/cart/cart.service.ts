@@ -5,13 +5,15 @@ import { RedisService } from 'src/redis/redis.service';
 export class CartService {
   constructor(private redisService: RedisService) {}
 
-  async create(dto: {
+  async create(payload: {
+    cartItems: {
+      productId: string;
+      unitPrice: number;
+      quantity: number;
+    }[];
     userId: string;
-    productId: string;
-    quantity: number;
-    unitPrice: number;
   }) {
-    return await this.redisService.createCarts(dto);
+    return await this.redisService.createCarts(payload);
   }
 
   findAll() {
